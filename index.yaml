@@ -1,0 +1,73 @@
+openapi: 3.0.0
+info:
+  title: Redis KeyValue API
+  version: 1.0.0
+paths:
+  /redis/add:
+    post:
+      summary: Add key-value record to Redis
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KeyValueRequest'
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request, invalid input
+          
+  /redis/get/{key}:
+    get:
+      summary: Retrieve value from Redis using key
+      parameters:
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The key to retrieve the value
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KeyValueResponse'
+        '404':
+          description: Key not found
+
+components:
+  schemas:
+    KeyValueRequest:
+      type: object
+      properties:
+        key:
+          type: string
+          description: The key for the record
+        value:
+          type: string
+          description: The value to be stored
+      required:
+        - key
+        - value
+
+    KeyValueResponse:
+      type: object
+      properties:
+        key:
+          type: string
+          description: The key for the retrieved value
+        value:
+          type: string
+          description: The retrieved value
+
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: Authorization
+      in: header
+
+security:
+  - apiKey: []
